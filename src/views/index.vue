@@ -30,7 +30,6 @@
           for(let i=0;i<7;i++){
             a.push(Math.floor( Math.random()*10 ))
           }
-          //
           window.localStorage.setItem("key",a.join(","));
           this.keys= window.localStorage.getItem("key").split(",");
         }
