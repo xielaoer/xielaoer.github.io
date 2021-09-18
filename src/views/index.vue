@@ -79,7 +79,7 @@
     flex-wrap: wrap;
   }
   .col{
-    width:30px;height:30px;border-radius:15px;border:solid #1989fa 1px;
+    width:30px;height:30px;border-radius:15px;border:solid #dcdee0 1px;
     text-align: center;
     line-height: 29px
   }
