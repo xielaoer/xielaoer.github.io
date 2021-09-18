@@ -55,7 +55,7 @@ const SSQRandom = ()=>{
         let ranDom = () =>{ return Math.floor(Math.random()*33 )+1; };
         let now = ranDom();
         if(blue.find(v=>v===now)){
-            addOneBlue(index);
+            return addOneBlue(index);
         }
         blue[index] = now;
     };
@@ -100,14 +100,19 @@ const DLTRandom = ()=>{
         let ranDom = () =>{ return Math.floor(Math.random()*35 )+1; };
         let now = ranDom();
         if(blue.find(v=>v===now)){
-            addOneBlue(index);
+            return addOneBlue(index);
         }
         blue[index] = now;
     };
     //red
     let red = new Array(2);
     const addOneRead = (index)=>{
-        red[index] = (Math.floor(Math.random()*12 )+1)
+        let ranDom = () =>{ return Math.floor(Math.random()*12 )+1 };
+        let now = ranDom();
+        if(red.find(v=>v===now)){
+            return addOneRead(index);
+        }
+        red[index] = now;
     };
     //exist
     const exist = ()=>{ return blue.concat(red) };
