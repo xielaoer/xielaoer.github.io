@@ -29,7 +29,7 @@ class Ticket {
             finish:()=>{
                let finish = randomFun.finish();
                if(finish){
-                  //this.putLocal(randomFun.exist());
+                  this.putLocal(randomFun.exist());
                }
                return finish;
             },
@@ -187,8 +187,17 @@ const tickets = [
     new Ticket(6,"星期六","DLT","DLT",DLTRandom),
 ];
 
-//let num = new Date().getDay();
-let num = 6;
+let num = new Date().getDay();
 
 export const toDay = tickets.filter(v=>v.num===num)[0];
+
+export const loadAllData = ()=>{
+    let i = 0,oJson = {},sKey;
+    // eslint-disable-next-line no-cond-assign
+    for (; sKey = window.localStorage.key(i); i++) {
+        if((sKey.indexOf("SSQ")!=-1||sKey.indexOf("DLT")!=-1||sKey.indexOf("QXC")!=-1))
+        oJson[sKey] = window.localStorage.getItem(sKey);
+    }
+    return oJson;
+}
 
