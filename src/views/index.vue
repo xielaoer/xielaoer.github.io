@@ -79,9 +79,10 @@
     flex-wrap: wrap;
   }
   .col{
-    width:30px;height:30px;border-radius:15px;border:solid #dcdee0 1px;
+    width:30px;height:30px;border-radius:15px;border:solid #dcdee0  1px;
+    background: #dcdee026;
     text-align: center;
-    line-height: 29px
+    line-height: 29px;
   }
   @keyframes fade-in {
     0% {opacity: 0;}/*初始状态 透明度为0*/
