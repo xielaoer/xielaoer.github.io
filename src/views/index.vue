@@ -8,17 +8,17 @@
     <div class="row">
       <div class="col" v-for="(item,index) in luckNum" :key="index">
           <!--SSQ&&QXC-->
-          <div v-if="item&&(toDay.key.indexOf('SSQ')!==-1||toDay.key.indexOf('QXC')!==-1)&&index<6" class="fade-in blue">
+          <div v-if="item&&(toDay.key.indexOf('SSQ')!==-1||toDay.key.indexOf('QXC')!==-1)&&index<6" :class="openBtn?'fade-in blue':'blue'">
             {{item}}
           </div>
-          <div v-if="item&&(toDay.key.indexOf('SSQ')!==-1||toDay.key.indexOf('QXC')!==-1)&&index>=6" class="fade-in red">
+          <div v-if="item&&(toDay.key.indexOf('SSQ')!==-1||toDay.key.indexOf('QXC')!==-1)&&index>=6" :class="openBtn?'fade-in blue':'blue'">
             {{item}}
           </div>
          <!--DLT-->
-          <div v-if="item&&toDay.key.indexOf('DLT')!==-1&&index<5" class="fade-in blue">
+          <div v-if="item&&toDay.key.indexOf('DLT')!==-1&&index<5" :class="openBtn?'fade-in blue':'blue'">
             {{item}}
           </div>
-          <div v-if="item&&toDay.key.indexOf('DLT')!==-1&&index>=5" class="fade-in red">
+          <div v-if="item&&toDay.key.indexOf('DLT')!==-1&&index>=5" :class="openBtn?'fade-in blue':'blue'">
             {{item}}
           </div>
       </div>
