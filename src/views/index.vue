@@ -8,17 +8,17 @@
     <div class="row">
       <div class="col" v-for="(item,index) in luckNum" :key="index">
           <!--SSQ&&QXC-->
-          <div v-if="item&&(toDay.key.indexOf('SSQ')!==-1||toDay.key.indexOf('QXC')!==-1)&&index<6" :class="openBtn?'fade-in blue':'blue'">
+          <div v-if="item&&(toDay.key.indexOf('SSQ')!==-1||toDay.key.indexOf('QXC')!==-1)&&index<6" :class="finish?'blue':'fade-in blue'">
             {{item}}
           </div>
-          <div v-if="item&&(toDay.key.indexOf('SSQ')!==-1||toDay.key.indexOf('QXC')!==-1)&&index>=6" :class="openBtn?'fade-in blue':'blue'">
+          <div v-if="item&&(toDay.key.indexOf('SSQ')!==-1||toDay.key.indexOf('QXC')!==-1)&&index>=6" :class="finish?'red':'fade-in red'">
             {{item}}
           </div>
          <!--DLT-->
-          <div v-if="item&&toDay.key.indexOf('DLT')!==-1&&index<5" :class="openBtn?'fade-in blue':'blue'">
+          <div v-if="item&&toDay.key.indexOf('DLT')!==-1&&index<5" :class="finish?'blue':'fade-in blue'">
             {{item}}
           </div>
-          <div v-if="item&&toDay.key.indexOf('DLT')!==-1&&index>=5" :class="openBtn?'fade-in blue':'blue'">
+          <div v-if="item&&toDay.key.indexOf('DLT')!==-1&&index>=5" :class="finish?'red':'fade-in red'">
             {{item}}
           </div>
       </div>
@@ -43,13 +43,15 @@
           return{
             toDay:toDay,
             luckNum:[],
+            finish:false,
             openBtn:false,
             luckNumFun:{}
           }
       },
       mounted() {
         this.luckNumFun = toDay.luckNumFun();
-        this.openBtn = !this.luckNumFun.finish();
+        this.finish = this.luckNumFun.finish();
+        this.openBtn = !this.finish;
         this.luckNum = this.luckNumFun.exist();
       },
     methods:{
