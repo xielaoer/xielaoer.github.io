@@ -227,7 +227,7 @@ const getSSQList100 = async ()=>{
     if(SSQList100.length>0){
         return SSQList100;
     }
-    const {data:data} = await axios.get('/ssq');
+    const {data:data} = await axios.get('/ss1q1');
     return data.result;
 };
 const SSQRules = [
@@ -372,15 +372,21 @@ let num = new Date().getDay();
 
 export const toDay = ticketTypes.filter(v=>v.num===num)[0];
 
+import Vue from 'vue';
+import { Notify } from 'vant';
+// 全局注册
+Vue.use(Notify);
+
 export const loadTickets = async ()=>{
     let tickets = Ticket.getLocals().sort((a, b) => moment(a)>moment(b)?1:-1);
     for (const e of tickets) {
        if(e.result==='未知'&&moment(e.time).isBefore(moment(moment().format("YYYY-MM-DD")))){
            try {
                e.result = await ticketTypes.filter(v =>v.key===e.key)[0].checkFun(e.time,e.luckNum);
-           }catch (e) {
+           }catch (ex) {
                e.result = '未知';
-               console.error(e);
+               Notify({ type: 'danger', message: JSON.stringify(ex),duration: 0, });
+               console.error(ex);
            }
            if(e.result!=='未知'){
                Ticket.setLocal(e);
@@ -428,4 +434,4 @@ const initData = [
   }
 ];
 
-//window.localStorage.setItem("tickets",JSON.stringify(initData));
+window.localStorage.setItem("tickets",JSON.stringify(initData));
