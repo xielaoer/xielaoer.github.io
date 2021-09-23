@@ -434,4 +434,4 @@ const initData = [
   }
 ];
 
-//window.localStorage.setItem("tickets",JSON.stringify(initData));
+window.localStorage.setItem("tickets",JSON.stringify(initData));
