@@ -227,7 +227,7 @@ const getSSQList100 = async ()=>{
     if(SSQList100.length>0){
         return SSQList100;
     }
-    const {data:data} = await axios.get('/ss1q1');
+    const {data:data} = await axios.get('/ssq');
     return data.result;
 };
 const SSQRules = [
@@ -434,4 +434,4 @@ const initData = [
   }
 ];
 
-window.localStorage.setItem("tickets",JSON.stringify(initData));
+//window.localStorage.setItem("tickets",JSON.stringify(initData));
