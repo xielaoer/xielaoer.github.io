@@ -385,7 +385,8 @@ export const loadTickets = async ()=>{
                e.result = await ticketTypes.filter(v =>v.key===e.key)[0].checkFun(e.time,e.luckNum);
            }catch (ex) {
                e.result = '未知';
-               Notify({ type: 'danger', message: JSON.stringify(ex),duration: 0, });
+               alert(JSON.stringify(ex));
+               //Notify({ type: 'danger', message: JSON.stringify(ex),duration: 0, });
                console.error(ex);
            }
            if(e.result!=='未知'){
