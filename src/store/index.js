@@ -80,7 +80,7 @@ class Ticket {
         Ticket.setLocals(tickets);
     }
     static getLocal(key,time){
-        let items = Ticket.getLocals().filter(e=>e.key===key&&time===time);
+        let items = Ticket.getLocals().filter(e=>e.key===key&&e.time===time);
         return items.length>0?items[0]:null;
     }
 }
@@ -222,9 +222,43 @@ const QXCRandom = ()=>{
 /**
  *SSQCheck
  */
-const SSQCheck = (time,luckNum) =>{
-    console.log(time,luckNum);
-    throw new Error("未实现！");
+let SSQList100 = [];
+const getSSQList100 = async ()=>{
+    if(SSQList100.length>0){
+        return SSQList100;
+    }
+    const {data:data} = await axios.get('/ssq');
+    return data.result;
+};
+const SSQRules = [
+    {blue:6,red:1,result:"一等"},
+    {blue:6,red:0,result:"二等"},
+    {blue:5,red:1,result:"三等"},
+    {blue:5,red:0,result:"四等"},
+    {blue:4,red:1,result:"四等"},
+    {blue:4,red:0,result:"五等"},
+    {blue:3,red:1,result:"五等"},
+    {blue:0,red:1,result:"六等"},
+    {blue:2,red:1,result:"六等"},
+    {blue:1,red:1,result:"六等"},
+];
+const SSQCheck = async (time,luckNum) =>{
+    let list = await getSSQList100();
+    list = list.filter(v=>{
+        return moment(time).isSame(moment(moment(v.date).format("YYYY-MM-DD")));
+    });
+    if(list<0){
+        return "未知";
+    }
+    luckNum = luckNum.split(",").map(e=>{
+        if(e<10) e = "0"+e;
+        return e;
+    });
+    let blue = luckNum.slice(0,6).concat(list[0].blue.split(","));
+    let countBlue = Math.abs(new Set(blue).size-blue.length);
+    let countRed = luckNum[6]===list[0].red?1:0;
+    let rule = SSQRules.filter(v=>v.blue===countBlue&&v.red===countRed);
+    return rule.length>0?rule[0].result:"未中";
 };
 
 /**
@@ -257,16 +291,16 @@ const DLTRules = [
 const DLTCheck = async (time,luckNum) =>{
     let list = await getDLTList100();
     list = list.filter(v=>{
-        return moment(time)._i === moment(moment(v.lotterySaleEndtime).format("YYYY-MM-DD"))._i;
+        return moment(time).isSame(moment(moment(v.lotterySaleEndtime).format("YYYY-MM-DD")));
     });
-    if(list<0){
-        throw new Error("获取DLTList100匹配异常！");
+    if(list<=0){
+       return "未知";
     }
     luckNum = luckNum.split(",").map(e=>{
         if(e<10) e = "0"+e;
         return e;
     });
-    let resultNum = list[0].lotteryDrawResult.split(" ");
+    let resultNum = list[0]['lotteryDrawResult'].split(" ");
     let blue = luckNum.slice(0,5).concat(resultNum.slice(0,5));
     let red = luckNum.slice(5,7).concat(resultNum.slice(5,7));
     let countBlue = Math.abs(new Set(blue).size-blue.length);
@@ -278,9 +312,47 @@ const DLTCheck = async (time,luckNum) =>{
 /**
  *QXCCheck
  */
-const QXCCheck = (time,luckNum) =>{
-    console.log(time,luckNum);
-    throw new Error("未实现！");
+let QXCList100 = [];
+const getQXCList100 = async ()=>{
+    if(QXCList100.length>0){
+        return QXCList100;
+    }
+    const {data:data} = await axios.get('https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry?gameNo=04&provinceId=0&pageSize=100&isVerify=1&pageNo=1');
+    return data.value.list;
+};
+const QXCRules = [
+    {blue:6,red:1,result:"一等"},
+    {blue:6,red:0,result:"二等"},
+    {blue:5,red:1,result:"三等"},
+    {blue:5,red:0,result:"四等"},
+    {blue:4,red:1,result:"四等"},
+    {blue:4,red:0,result:"五等"},
+    {blue:3,red:1,result:"五等"},
+    {blue:3,red:0,result:"六等"},
+    {blue:0,red:1,result:"六等"},
+    {blue:2,red:1,result:"六等"},
+    {blue:2,red:1,result:"六等"},
+    {blue:1,red:1,result:"六等"},
+];
+const QXCCheck = async (time,luckNum) =>{
+    let list = await getQXCList100();
+    list = list.filter(v=>{
+        return moment(time).isSame(moment(moment(v.lotterySaleEndtime).format("YYYY-MM-DD")));
+    });
+    if(list<=0){
+        return "未知";
+    }
+    let resultNum = list[0]['lotteryDrawResult'].split(" ");
+    luckNum = luckNum.split(",");
+    let countBlue = 0;
+    let countRed = resultNum[6]===luckNum[6]?1:0;
+    for(let i=0;i<6;i++){
+        if(resultNum[i]===luckNum[i]){
+            countBlue++;
+        }
+    }
+    let rule = QXCRules.filter(v=>v.blue===countBlue&&v.red===countRed);
+    return rule.length>0?rule[0].result:"未中";
 };
 
 /**
@@ -301,18 +373,59 @@ let num = new Date().getDay();
 export const toDay = ticketTypes.filter(v=>v.num===num)[0];
 
 export const loadTickets = async ()=>{
-    let tickets = Ticket.getLocals();
+    let tickets = Ticket.getLocals().sort((a, b) => moment(a)>moment(b)?1:-1);
     for (const e of tickets) {
-       if(e.result==='未知'&&moment(e.time)<moment(moment().format("YYYY-MM-DD"))){
+       if(e.result==='未知'&&moment(e.time).isBefore(moment(moment().format("YYYY-MM-DD")))){
            try {
                e.result = await ticketTypes.filter(v =>v.key===e.key)[0].checkFun(e.time,e.luckNum);
            }catch (e) {
+               e.result = '未知';
                console.error(e);
            }
-           if(e.result){
+           if(e.result!=='未知'){
                Ticket.setLocal(e);
            }
        }
     }
     return tickets;
 };
+
+
+/**
+ *initData
+ */
+// eslint-disable-next-line no-unused-vars
+const initData = [
+    {
+        "key": "QXC",
+        "time": "2021-09-17",
+        "luckNum": "2,2,3,4,5,2,5",
+        "result": "未知"
+    },
+  {
+    "key": "SSQ",
+    "time": "2021-09-19",
+    "luckNum": "26,19,10,20,18,2,5",
+    "result": "未知"
+  },
+  {
+    "key": "DLT",
+    "time": "2021-09-20",
+    "luckNum": "14,24,12,9,32,2,12",
+    "result": "未知"
+  },
+ {
+    "key": "DLT",
+    "time": "2021-09-22",
+    "luckNum": "11,14,29,31,32,11,12",
+    "result": "未知"
+ },
+  {
+    "key": "SSQ",
+    "time": "2021-09-23",
+    "luckNum": "3,13,5,1,7,9,9",
+    "result": "未知"
+  }
+];
+
+//window.localStorage.setItem("tickets",JSON.stringify(initData));
