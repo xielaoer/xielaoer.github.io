@@ -227,8 +227,17 @@ const getSSQList100 = async ()=>{
     if(SSQList100.length>0){
         return SSQList100;
     }
-    const {data:data} = await axios.get('/ssq');
-    return data.result;
+    let script = document.createElement('script');
+    script.id = "SSQList100";
+    script.type = "text/javascript";
+    script.src = "http://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?" +
+        "name=ssq&issueCount=100&issueStart=&issueEnd=&dayStart=&dayEnd=&t="+new Date().getTime();
+    let head = document.getElementsByTagName('head')[0];
+    head.appendChild(script).addEventListener("load", ()=>{
+            let html = document.querySelector("#SSQList100").innerHTML;
+            console.log(html);
+        });
+    return [];
 };
 const SSQRules = [
     {blue:6,red:1,result:"一等"},
@@ -247,7 +256,7 @@ const SSQCheck = async (time,luckNum) =>{
     list = list.filter(v=>{
         return moment(time).isSame(moment(moment(v.date).format("YYYY-MM-DD")));
     });
-    if(list<0){
+    if(list<=0){
         return "未知";
     }
     luckNum = luckNum.split(",").map(e=>{
