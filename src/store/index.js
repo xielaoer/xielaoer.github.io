@@ -227,17 +227,7 @@ const getSSQList100 = async ()=>{
     if(SSQList100.length>0){
         return SSQList100;
     }
-    let script = document.createElement('script');
-    script.id = "SSQList100";
-    script.type = "text/javascript";
-    script.src = "http://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?" +
-        "name=ssq&issueCount=100&issueStart=&issueEnd=&dayStart=&dayEnd=&t="+new Date().getTime();
-    let head = document.getElementsByTagName('head')[0];
-    head.appendChild(script).addEventListener("load", ()=>{
-            let html = document.querySelector("#SSQList100").innerHTML;
-            console.log(html);
-        });
-    return [];
+    return SSQList100;
 };
 const SSQRules = [
     {blue:6,red:1,result:"一等"},
@@ -276,10 +266,11 @@ const SSQCheck = async (time,luckNum) =>{
 let DLTList100 = [];
 const getDLTList100 = async ()=>{
     if(DLTList100.length>0){
-        return DLTList100;
+        return [...DLTList100];
     }
     const {data:data} = await axios.get('https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry?gameNo=85&provinceId=0&pageSize=100&isVerify=1&pageNo=1');
-    return data.value.list;
+    DLTList100 = data.value.list;
+    return DLTList100;
 };
 const DLTRules = [
     {blue:5,red:2,result:"一等"},
@@ -324,10 +315,11 @@ const DLTCheck = async (time,luckNum) =>{
 let QXCList100 = [];
 const getQXCList100 = async ()=>{
     if(QXCList100.length>0){
-        return QXCList100;
+        return [...QXCList100];
     }
     const {data:data} = await axios.get('https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry?gameNo=04&provinceId=0&pageSize=100&isVerify=1&pageNo=1');
-    return data.value.list;
+    QXCList100 = data.value.list ;
+    return QXCList100;
 };
 const QXCRules = [
     {blue:6,red:1,result:"一等"},
