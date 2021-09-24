@@ -436,4 +436,5 @@ const initData = [
   }
 ];
 
+//qu掉
 //window.localStorage.setItem("tickets",initData);
