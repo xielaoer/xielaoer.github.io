@@ -398,8 +398,6 @@ export const loadTickets = async ()=>{
     return tickets;
 };
 
-alert(111);
-
 /**
  *initData
  */
