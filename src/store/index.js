@@ -59,7 +59,7 @@ class Ticket {
                     window.localStorage.removeItem(sKey);
                 }
             }
-            Ticket.setLocals(tickets);
+             Ticket.setLocals(tickets);
         }
         /**********end***********/
         return tickets;
@@ -76,6 +76,9 @@ class Ticket {
             }else if(i===tickets.length-1){
                 tickets.push(ticket);
             }
+        }
+        if(tickets.length===0){
+            tickets.push(ticket);
         }
         Ticket.setLocals(tickets);
     }
